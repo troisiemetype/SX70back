@@ -27,6 +27,8 @@ The STL for the back are included in the STL folder.
 
 The flex circuit has been removed from the back chassis. Switches have been connected to ground, and to Arduino using internal pull-up resistors. S3 and S5 (see SX70 repair manual) are used to detect different ejections steps. S7 is the main power switch, which closes and powers the system when a pack is inserted and the door closed. The Arduino is powered as long as there is a pack, but is put asleep after 20 seconds (can be modified) idle.
 
+An Arduino pro-mini has been used, it's placed in a 2mm thick recess in the inside of the main shell near the leds, and simply mounted with double-side tape
+
 ### The program uses two libraries :
 
 #### Push button
