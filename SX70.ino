@@ -50,7 +50,10 @@
  * - Then after 20 seconds, it goes to sleep, which is its "normal" mode.
  * - When the user needs to eject a film after having took a picture, the shutter (S1) is pressed.
  * - The system there goes out of sleep, displays the remaining views of the pack, and the sleep timer is launched.
+ *		Note : as a safety mesure, S1 must be released before the state changes.
  * - When the shutter (S1) is pressed again, the motor runs, the ejection process starts, and the sleep timer is stopped.
+ *		note : the shutter as a delay for long press, to avoid accidental film ejection.
+ *		if the shutter is pressed for less than half a second (or other delay set), sleep counter start again.
  * - When S3 is trigerred, the system starts to monitor S5.
  * - When S5 is trigerred, the motors stops, the image counter is decremented, and the timer for sleep is re-launched.
  * - If the shutter is not pressed before the sleep timer is over, then the system goes to sleep again.
@@ -146,6 +149,8 @@ void setup(){
 void loop(){
 	if (timerSleep.update()) goToSleep();
 
+	// These few lines are for led diming. pictureLoop is incremented at each loop,
+	// And leds are lit only when it is 0. Kind of pwm, main goal is to save energy from battery.
 	if (pictureLoop == 0){
 		PORTD = pictureByte;
 		digitalWrite(PIN_STATUS_LED, statusLed);
@@ -154,13 +159,17 @@ void loop(){
 		PORTD = 0;
 		digitalWrite(PIN_STATUS_LED, 0);
 	}
+
+	// Here we increment loop (trivial), and reset it when it goes above 7
 	++pictureLoop;
+	// value can be changed, but MUST be a power of 2 minus 1 ((2^x) - 1)
 	pictureLoop &= 7;
 
 	sw1.update();
 	sw3.update();
 	sw5.update();
 
+	// State machine for dispatching to main functions following current state.
 	switch(state){
 		case WAKE_UP:
 			wakeUp();
@@ -302,7 +311,11 @@ void eject(){
 void displayPictureCount(){
 	uint8_t output = 0;
 	if (pictureCounter == 9){
+		// 60 is 0b00111100.
+		// It displays the four leds in the center as a remainder the dark slide is still here.
 		output = 60;
+// Finally not used : when pack is empty, counter is off. But pictures can still be processed.
+// usefull if ones uses vintage polaroid film, which packs are ten views.		
 //	} else if (pictureCounter == 0){
 //		output = 36;
 	} else {
@@ -315,7 +328,7 @@ void displayPictureCount(){
 
 }
 
-// For debugging purpose : use the eight leds to display the state of a register
+// For debugging purpose : use the eight leds to display the state of a register or any other byte data.
 void displayPort(uint8_t data){
 	PORTD = data;
 	delay(3000);
