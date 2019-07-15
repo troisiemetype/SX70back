@@ -62,6 +62,8 @@
 #include "PushButton.h"
 #include "Timer.h"
 
+const uint16_t SW1_LONG_DELAY = 500;			// Delay for a long press of the user button, us
+const uint8_t TIMER_SLEEP_DELAY = 20;			// timer delay before sleep, seconds.
 
 // Picture counter init.
 uint8_t pictureCounter = 9;
@@ -84,12 +86,8 @@ PushButton sw1 = PushButton();
 PushButton sw3 = PushButton();
 PushButton sw5 = PushButton();
 
-const uint16_t SW1_LONG_DELAY = 500;	// Delay for a long press of the user button
-
 // Timer
 Timer timerSleep = Timer();
-const uint8_t TIMER_SLEEP_DELAY = 20;			// timer delay before sleep, seconds.
-
 Timer timerProcess = Timer();
 const uint8_t TIMER_PROCESS_DELAY = 50;		// timer delay for led blking when processing, milliseconds.
 
@@ -185,6 +183,8 @@ void loop(){
 				
 				digitalWrite(PIN_MOTOR, 1);
 				state = EJECT_WAIT_SW3;
+			} else if (sw1.justReleased()){
+				timerSleep.start();
 			}
 			break;
 
