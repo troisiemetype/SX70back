@@ -15,20 +15,24 @@ If you use this code and files for a project, consider letting me know, drop a l
 
 ### About 3D files :
 
-The STL for the back are included in the STL folder. *Inner frame 2* is the only part to be 3D printed, all the enclosure is made of wood, and trigger button and door latch made of brass. They probably can be 3D printed too.
+The STL for the back are included in the STL folder.
+
+*Inner frame* is the only part to be 3D printed, all the enclosure is made of wood, and trigger button and door latch made of brass. They probably can be 3D printed too.
 
 *Main shell* has holes for 3mm leds. On mine the small holes have been filed with clear PU resin.
+
 *Door shell* is composed of several parts assembled, there is an inside slot for mounting a "light tongue", altough maybe not sctrictly necessary.
 
 ### About Arduino and electronics :
 
 The flex circuit has been removed from the back chassis. Switches have been connected to ground, and to Arduino using internal pull-up resistors. S3 and S5 (see SX70 repair manual) are used to detect different ejections steps. S7 is the main power switch, which closes and powers the system when a pack is inserted and the door closed. The Arduino is powered as long as there is a pack, but is put asleep after 20 seconds (can be modified) idle.
 
-###The program uses two libraries :
-####Push button
+### The program uses two libraries :
+
+#### Push button
 https://github.com/troisiemetype/PushButton
 Simplifies the switches and button management, by providing functions to update, debounce short and long clic, etc. Once a button / switch is created, it just have to be updated as soon as possible (polled in the main loop), and tested whenever needed)
 
-####Timer
+#### Timer
 https://github.com/troisiemetype/Timer
 Timer made from millis() core Arduino function, with convenient functions for setting times, make loops, etc. Non blocking.
